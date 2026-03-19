@@ -1,209 +1,217 @@
-# 🌡️📊 API Conversor & Promedio
+# 🚀 API Conversor y Promedio
 
-Proyecto de APIs REST desarrolladas con **Flask** que ofrece dos microservicios:
+API desarrollada en **Flask** que permite:
 
-1. **Conversor de Temperatura** — Convierte entre Celsius y Fahrenheit.
-2. **Calculadora de Promedio** — Calcula el promedio de calificaciones de un estudiante.
+* 📊 Calcular el promedio de calificaciones de un alumno
+* 🌡️ Convertir temperaturas entre Celsius y Fahrenheit
+
+Este proyecto forma parte de una práctica enfocada en el desarrollo de APIs REST, validación de datos y manejo de errores.
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📁 Estructura del proyecto
 
 ```
 API_CONVERSOR_PROMEDIO/
-├── .env                  # Variables de entorno (no se sube al repo)
-├── .gitignore            # Archivos y carpetas ignorados por Git
-├── app_conversor.py      # API de conversión de temperatura
-├── app_promedio.py       # API de cálculo de promedio
-├── requirements.txt      # Dependencias del proyecto
-└── README.md
+│
+├── .venv/
+├── screenshots/
+├── .env
+├── .gitignore
+├── app_conversor.py
+├── app_promedio.py
+└── requirements.txt
 ```
 
 ---
 
-## ⚙️ Requisitos Previos
+## ⚙️ Instalación
 
-- Python 3.8 o superior
-- pip (gestor de paquetes de Python)
+1. Clonar el repositorio:
+
+```bash
+git clone https://github.com/tu-usuario/tu-repo.git
+cd API_CONVERSOR_PROMEDIO
+```
+
+2. Crear entorno virtual:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Linux/Mac
+.venv\Scripts\activate     # Windows
+```
+
+3. Instalar dependencias:
+
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
-## 🚀 Instalación
+## 🔐 Variables de entorno
 
-1. **Clonar el repositorio:**
+Archivo `.env`:
 
-   ```bash
-   git clone https://github.com/tu-usuario/API_CONVERSOR_PROMEDIO.git
-   cd API_CONVERSOR_PROMEDIO
-   ```
-
-2. **Crear y activar un entorno virtual:**
-
-   ```bash
-   python -m venv venv
-
-   # Windows
-   venv\Scripts\activate
-
-   # macOS / Linux
-   source venv/bin/activate
-   ```
-
-3. **Instalar las dependencias:**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Configurar las variables de entorno:**
-
-   Crear un archivo `.env` en la raíz del proyecto con el siguiente contenido:
-
-   ```env
-   FLASK_APP_PROMEDIO=app_promedio.py
-   FLASK_APP_CONVERSOR=app_conversor.py
-   FLASK_ENV=development
-   FLASK_DEBUG=True
-   FLASK_RUN_HOST=127.0.0.1
-   FLASK_RUN_PORT=5000
-   SECRET_KEY=tu_clave_secreta_aqui
-   ```
+```
+FLASK_ENV=development
+FLASK_DEBUG=True
+FLASK_RUN_HOST=127.0.0.1
+FLASK_RUN_PORT=5000
+SECRET_KEY=tu_clave_secreta
+```
 
 ---
 
 ## ▶️ Ejecución
 
-Cada microservicio se ejecuta de forma independiente.
-
-### Conversor de Temperatura
-
-```bash
-python app_conversor.py
-```
-
-### Calculadora de Promedio
+### API Promedio
 
 ```bash
 python app_promedio.py
 ```
 
-> **Nota:** Ambos servicios usan el puerto `5000` por defecto. Para ejecutarlos simultáneamente, cambia el valor de `FLASK_RUN_PORT` en el `.env` o ejecuta uno en un puerto diferente:
->
-> ```bash
-> FLASK_RUN_PORT=5001 python app_promedio.py
-> ```
+### API Conversor
+
+```bash
+python app_conversor.py
+```
 
 ---
 
-## 📡 Endpoints
+# 📊 Endpoint: Promedio
 
-### 1. Conversor de Temperatura
+## 📌 POST /promedio
 
-| Propiedad | Detalle |
-|-----------|---------|
-| **URL** | `/convertir-temperatura` |
-| **Método** | `POST` |
-| **Content-Type** | `application/json` |
+Calcula el promedio de un alumno.
 
-#### Cuerpo de la petición
-
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `valor` | `number` | Temperatura a convertir |
-| `escala` | `string` | `"C"` (Celsius → Fahrenheit) o `"F"` (Fahrenheit → Celsius) |
-
-#### Ejemplo de petición
-
-```bash
-curl -X POST http://127.0.0.1:5000/convertir-temperatura \
-  -H "Content-Type: application/json" \
-  -d '{"valor": 100, "escala": "C"}'
-```
-
-#### Ejemplo de respuesta exitosa (`200`)
+### 📥 Request
 
 ```json
 {
-  "valor_original": 100,
+  "nombre": "Juan",
+  "calificaciones": [80, 90, 100]
+}
+```
+
+### 📤 Response
+
+```json
+{
+  "nombre": "Juan",
+  "calificaciones": [80, 90, 100],
+  "promedio": 90.0
+}
+```
+
+---
+
+## ❌ Manejo de errores
+
+### Campo faltante
+
+![Error campo faltante](screenshots/POST_calificaciones_ERROR_CampoFaltante.png)
+
+### Lista vacía
+
+![Error lista vacía](screenshots/POST_calificaciones_ERROR_Vacio.png)
+
+---
+
+## ✅ Caso exitoso
+
+![Éxito promedio](screenshots/POST_calificaciones_EXITO.png)
+
+---
+
+# 🌡️ Endpoint: Conversor de Temperatura
+
+## 📌 POST /convertir-temperatura
+
+Convierte temperaturas entre Celsius y Fahrenheit.
+
+---
+
+### 📥 Request
+
+```json
+{
+  "valor": 25,
+  "escala": "C"
+}
+```
+
+---
+
+### 📤 Response
+
+```json
+{
+  "valor_original": 25,
   "escala_origen": "Celsius",
-  "resultado": 212.0,
+  "resultado": 77.0,
   "escala_destino": "Fahrenheit",
-  "mensaje": "100° Celsius equivale a 212.0°F"
-}
-```
-
-#### Ejemplo de respuesta con error (`400`)
-
-```json
-{
-  "error": "Se requieren los campos 'valor' y 'escala'"
+  "mensaje": "25° Celsius equivale a 77.0°F"
 }
 ```
 
 ---
 
-### 2. Calculadora de Promedio
+## ❌ Manejo de errores
 
-| Propiedad | Detalle |
-|-----------|---------|
-| **URL** | `/promedio` |
-| **Método** | `POST` |
-| **Content-Type** | `application/json` |
+### Escala inválida
 
-#### Cuerpo de la petición
+![Error escala](screenshots/POST_conversiones_ERROR_EscalaInvertida.png)
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `nombre` | `string` | Nombre del estudiante |
-| `calificaciones` | `array[number]` | Lista de calificaciones |
+### Valor no numérico
 
-#### Ejemplo de petición
-
-```bash
-curl -X POST http://127.0.0.1:5000/promedio \
-  -H "Content-Type: application/json" \
-  -d '{"nombre": "Juan Pérez", "calificaciones": [90, 85, 78, 92, 88]}'
-```
-
-#### Ejemplo de respuesta exitosa (`200`)
-
-```json
-{
-  "nombre": "Juan Pérez",
-  "calificaciones": [90, 85, 78, 92, 88],
-  "promedio": 86.6
-}
-```
-
-#### Ejemplo de respuesta con error (`400`)
-
-```json
-{
-  "error": "Se requieren los campos 'nombre' y 'calificaciones'"
-}
-```
+![Error valor](screenshots/POST_conversiones_ERROR_ValorNoNumerico.png)
 
 ---
 
-## 🛠️ Tecnologías
+## ✅ Casos exitosos
 
-- **Python 3** — Lenguaje de programación
-- **Flask 3.1.0** — Framework web ligero
-- **python-dotenv 1.0.1** — Gestión de variables de entorno
+### Celsius a Fahrenheit
 
----
+![C a F](screenshots/POST_conversiones_EXITO_CelsiusAFahrenheit.png)
 
-## 🧪 Pruebas con Postman
+### Fahrenheit a Celsius
 
-Puedes importar las siguientes configuraciones en **Postman** para probar los endpoints:
-
-1. Crear una nueva petición `POST`.
-2. Configurar la URL correspondiente (`http://127.0.0.1:5000/convertir-temperatura` o `/promedio`).
-3. En la pestaña **Body**, seleccionar **raw** y **JSON**.
-4. Pegar el JSON de ejemplo y enviar la petición.
+![F a C](screenshots/POST_conversiones_EXITO_FarenheitACelsius.png)
 
 ---
 
-## 📝 Licencia
+# 🖥️ Ejecución en consola
 
-Este proyecto es de uso libre con fines educativos.
+![Salida consola](screenshots/TERMINAL_calificaciones_SalidaEnConsola.png)
+
+---
+
+## 🛠️ Tecnologías utilizadas
+
+* Python 🐍
+* Flask 🌐
+* python-dotenv 🔐
+
+---
+
+## 📌 Características
+
+* Validación de datos en requests
+* Manejo de errores HTTP (400)
+* Uso de variables de entorno
+* API REST estructurada
+* Respuestas en formato JSON
+
+---
+
+## 👨‍💻 Autor
+
+**Marlon Rojas Galindo**
+
+---
+
+## 📄 Licencia
+
+Este proyecto es de uso académico.
